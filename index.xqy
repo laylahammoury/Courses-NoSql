@@ -72,6 +72,20 @@ let $q := local:add-sort($q)
 return
 search:search($q, $options, xs:unsignedLong(xdmp:get-request-field("start","1")));
 
+(: adds sort to the search query string :)
+declare function local:add-sort($q){
+    let $sortby := local:sort-controller()
+    return
+        if($sortby)
+        then
+            let $old-sort := local:get-sort($q)
+            let $q :=
+                if($old-sort)
+                then search:remove-constraint($q,$old-sort,$options)
+                else $q
+            return fn:concat($q," sort:",$sortby)
+        else $q
+};
 
 (: determines if the end-user set the sort through the drop-down or through editing the search text field or came from the advanced search form :)
 declare function local:sort-controller(){
@@ -92,20 +106,6 @@ declare function local:sort-controller(){
     else xdmp:get-request-field("sortby")
 };
 
-(: adds sort to the search query string :)
-declare function local:add-sort($q){
-    let $sortby := local:sort-controller()
-    return
-        if($sortby)
-        then
-            let $old-sort := local:get-sort($q)
-            let $q :=
-                if($old-sort)
-                then search:remove-constraint($q,$old-sort,$options)
-                else $q
-            return fn:concat($q," sort:",$sortby)
-        else $q
-};
 
 declare function local:result-controller()
 {
@@ -120,7 +120,8 @@ declare function local:result-controller()
 declare function local:search-results()
 {
 	let $start := xs:unsignedLong(xdmp:get-request-field("start"))
-	let $q := xdmp:get-request-field("q")
+	let $q := local:add-sort(xdmp:get-request-field("q", "sort:relevance"))
+    let $results := search:search($q, $options, $start)
 	let $items :=
 			for $course in $results/search:result
 			let $uri := fn:data($course/@uri)
