@@ -25,6 +25,40 @@ declare variable $options :=
                 <search:score />
             </search:sort-order>
         </search:state>
+        <search:state name="newest">
+            <search:sort-order direction="descending" type="xs:date">
+                <search:attribute ns="" name="last"/>
+                <search:element ns="http://uwm.edu/courses" name="weeks"/>
+            </search:sort-order>
+            <search:sort-order>
+                <search:score/>
+            </search:sort-order>
+        </search:state>
+        <search:state name="oldest">
+            <search:sort-order direction="ascending" type="xs:date">
+                <search:attribute ns="" name="last"/>
+                <search:element ns="http://uwm.edu/courses" name="weeks"/>
+            </search:sort-order>
+            <search:sort-order>
+                <search:score/>
+            </search:sort-order>
+        </search:state>            
+        <search:state name="title">
+            <search:sort-order direction="ascending" type="xs:string">
+                <search:element ns="http://uwm.edu/courses" name="title"/>
+            </search:sort-order>
+            <search:sort-order>
+                <search:score/>
+            </search:sort-order>
+        </search:state>            
+        <search:state name="artist">
+            <search:sort-order direction="ascending" type="xs:string">
+                <search:element ns="http://uwm.edu/courses" name="artist"/>
+            </search:sort-order>
+            <search:sort-order>
+                <search:score/>
+            </search:sort-order>
+        </search:state>         
     </search:operator>
 	<constraint name="title">
         <range type="xs:string" collation="http://marklogic.com/collation/en/S1/AS/T00BB">
@@ -118,12 +152,14 @@ declare function local:search-results()
 			let $course-doc := fn:doc($uri)
 			return 
 			<div class="card w-100 mx-5 m-3">
-				<h5 class="card-header"> {fn:substring($course-doc//ts:title/text(),1,16)}... by {fn:string-join($course-doc//ts:days/text(), ' ')}</h5>
+				<h5 class="card-header"> {$course-doc//ts:title/text()}</h5>
 				<div class="card-body">
-					<h5 class="card-title"> Course name :- {$course-doc//ts:title/text()}</h5>
+					<h5 class="card-title"> Course number :- {$course-doc//ts:course}</h5>
 					<p class="card-text">{fn:tokenize($course-doc//ts:descr, " ") [1 to 70]}
 						{local:description($course)}
 					</p>
+                    <div>Course days are:  {fn:string-join(distinct-values($course-doc//ts:days/text()), ' ')} </div> 
+                    <div>Course instructor/s :  {fn:string-join(distinct-values($course-doc//ts:instructor/text()), ' ')} </div> 
 				</div>
 			</div>
 	return
@@ -191,11 +227,12 @@ declare function local:default-results()
 (
 		let $z := xdmp:dayname-from-date(fn:current-date())
 		for $course in /ts:course_listing		 
-		let $onDay := fn:contains(fn:string-join($course//ts:days/text(), ''), local:get-UMTWRFS-day-name-format($z))
+        (: TODO check IN days :)
+		let $onDay := fn:contains(fn:string-join(distinct-values($course//ts:days/text()), ' '), local:get-UMTWRFS-day-name-format($z))
 		where if($onDay) then 1 else 0
 		return (
 			<div class="card w-100 mx-5 m-3">
-				<h5 class="card-header"> "{$course//ts:title/text()}" by {fn:string-join($course//ts:days/text(), '')}</h5>
+				<h5 class="card-header"> "{$course//ts:title/text()}" IN {fn:string-join(distinct-values($course//ts:days/text()), ' ')}</h5>
 				<div class="card-body">
 					<h5 class="card-title"> Course name :- {$course//ts:course}</h5>
 					<p class="card-text">{fn:tokenize($course//ts:descr, " ") [1 to 70]}
