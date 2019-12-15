@@ -25,24 +25,7 @@ declare variable $options :=
                 <search:score />
             </search:sort-order>
         </search:state>
-        <search:state name="newest">
-            <search:sort-order direction="descending" type="xs:date">
-                <search:attribute ns="" name="last"/>
-                <search:element ns="http://uwm.edu/courses" name="weeks"/>
-            </search:sort-order>
-            <search:sort-order>
-                <search:score/>
-            </search:sort-order>
-        </search:state>
-        <search:state name="oldest">
-            <search:sort-order direction="ascending" type="xs:date">
-                <search:attribute ns="" name="last"/>
-                <search:element ns="http://uwm.edu/courses" name="weeks"/>
-            </search:sort-order>
-            <search:sort-order>
-                <search:score/>
-            </search:sort-order>
-        </search:state>            
+               
         <search:state name="title">
             <search:sort-order direction="ascending" type="xs:string">
                 <search:element ns="http://uwm.edu/courses" name="title"/>
@@ -50,15 +33,7 @@ declare variable $options :=
             <search:sort-order>
                 <search:score/>
             </search:sort-order>
-        </search:state>            
-        <search:state name="artist">
-            <search:sort-order direction="ascending" type="xs:string">
-                <search:element ns="http://uwm.edu/courses" name="artist"/>
-            </search:sort-order>
-            <search:sort-order>
-                <search:score/>
-            </search:sort-order>
-        </search:state>         
+        </search:state>                 
     </search:operator>
 	<constraint name="title">
         <range type="xs:string" collation="http://marklogic.com/collation/en/S1/AS/T00BB">
@@ -66,7 +41,7 @@ declare variable $options :=
             <facet-option>limit=0</facet-option>
         </range>
     </constraint>
-	<constraint name="Top5Instructor">
+	<constraint name="Instructor">
         <range type="xs:string" collation="http://marklogic.com/collation/en/S1/AS/T00BB">
             <element ns="http://uwm.edu/courses" name="instructor" />
             <facet-option>limit=5</facet-option>
@@ -74,7 +49,7 @@ declare variable $options :=
             <facet-option>descending</facet-option>
         </range>
     </constraint>
-	<constraint name="Top5Section">
+	<constraint name="Section">
         <range type="xs:string" collation="http://marklogic.com/collation/en/S1/AS/T00BB">
             <element ns="http://uwm.edu/courses" name="section" />
             <facet-option>limit=5</facet-option>
@@ -128,7 +103,7 @@ declare function local:add-sort($q){
                 if($old-sort)
                 then search:remove-constraint($q,$old-sort,$options)
                 else $q
-            return fn:concat($q," sort:section")
+            return fn:concat($q," sort:",$sortby)
         else $q
 };
 
@@ -350,7 +325,7 @@ xdmp:set-response-content-type("text/html; charset=utf-8"),
   <div id="searchdiv">
 	<div class="d-flex justify-content-center">
 	  	<input type="text" class="form-control w-75 mx-4" name="q" id="q" size="50" value="{local:add-sort(xdmp:get-request-field("q"))}"/>
-		<button class="btn btn-primary" type="button" id="reset_button" onclick="document.getElementById('bday').value = ''; document.getElementById('q').value = ''; document.location.href='index.xqy'">x</button>
+		<button class="btn btn-primary" type="button" id="reset_button" onclick=" document.getElementById('q').value = ''; document.location.href='index.xqy'">x</button>
     	<input  style="border:0; width:0; height:0; background-color: #A7C030" type="text" size="0" maxlength="0"/>
 		<input class="btn btn-primary" type="submit" id="submitbtn" name="submitbtn" value="search"/>
  
