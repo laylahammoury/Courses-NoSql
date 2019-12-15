@@ -118,9 +118,9 @@ declare function local:search-results()
 			let $course-doc := fn:doc($uri)
 			return 
 			<div class="card w-100 mx-5 m-3">
-				<h5 class="card-header"> {fn:substring($course-doc//ts:title/text(),1,10)}... by {fn:string-join($course-doc//ts:days/text(), '')}</h5>
+				<h5 class="card-header"> {fn:substring($course-doc//ts:title/text(),1,16)}... by {fn:string-join($course-doc//ts:days/text(), ' ')}</h5>
 				<div class="card-body">
-					<h5 class="card-title"> Course name :- {$course-doc//ts:course}</h5>
+					<h5 class="card-title"> Course name :- {$course-doc//ts:title/text()}</h5>
 					<p class="card-text">{fn:tokenize($course-doc//ts:descr, " ") [1 to 70]}
 						{local:description($course)}
 					</p>
@@ -294,6 +294,13 @@ xdmp:set-response-content-type("text/html; charset=utf-8"),
 
 </head>
 <body>
+<div id="header">
+    <div class="font-weight-bolder text-sm-center">  Welcome To PPU Courses </div>
+    <div>
+         Today is : {xdmp:dayname-from-date(fn:current-date())} {xdmp:get-request-field("oo")}
+    </div>
+</div>
+
 <div class="container ">
 <div class=" row" >	
 <div class="col-sm-3">
@@ -301,7 +308,7 @@ xdmp:set-response-content-type("text/html; charset=utf-8"),
   <br />
   <div class="tinynoitalics"><img src="images/checkblank.gif"/>(e.g. 1965-10-31)</div>
 </div>
-<div class="col-sm-8">
+<div class="col-sm-9">
   <form name="form1" method="get" action="index.xqy" id="form1">
   <div id="searchdiv">
 	<div class="d-flex justify-content-center">
@@ -320,7 +327,6 @@ xdmp:set-response-content-type("text/html; charset=utf-8"),
 </div>
 
 
-<div id="footer">{xdmp:dayname-from-date(fn:current-date())} {xdmp:get-request-field("oo")}</div>
 </div>
 
 

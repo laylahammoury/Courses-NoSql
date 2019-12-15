@@ -6,6 +6,8 @@ body {
     line-height: 150%;
     color: #333;
     padding-top: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 form {
@@ -27,8 +29,9 @@ a {
 }
 
 #header {
-    background-color: #56488C;
+    background-color: rgb(113, 162, 170);
     margin: 4px;
+    padding-top:20px;
 }
 
 #leftcol {
@@ -1063,13 +1066,17 @@ pre code {
 .col-8 {
     -ms-flex: 0 0 66.666667%;
     flex: 0 0 66.666667%;
-    max-width: 66.666667%
+    max-width: 66.666667%;
+    background: rgb(146, 117, 89);
+    padding-top: 30px;
 }
 
 .col-9 {
     -ms-flex: 0 0 75%;
     flex: 0 0 75%;
-    max-width: 75%
+    max-width: 75%;
+    background: rgb(146, 117, 89);
+    padding-top: 30px;
 }
 
 .col-10 {
@@ -1292,12 +1299,16 @@ pre code {
     .col-sm-8 {
         -ms-flex: 0 0 66.666667%;
         flex: 0 0 66.666667%;
-        max-width: 66.666667%
+        max-width: 66.666667%;
+        background: rgb(146, 117, 89);
+        padding-top: 30px;
     }
     .col-sm-9 {
         -ms-flex: 0 0 75%;
         flex: 0 0 75%;
-        max-width: 75%
+        max-width: 75%;
+        background: rgb(146, 117, 89);
+        padding-top: 30px;
     }
     .col-sm-10 {
         -ms-flex: 0 0 83.333333%;
