@@ -110,40 +110,35 @@ declare function local:song-detail()
 {
 	let $uri := xdmp:get-request-field("uri")
 	let $course := fn:doc($uri) 
-	return <div class="bg-light m-5 p-4">
-		<div class="font-weight-bold text-sm-center p-2">"{$course//ts:title/text()}"</div>
-		<div class="p-2">course number: {$course/ts:course_listing/ts:course/text()}</div>
+	return <div>
+		<div class="songnamelarge">"{$course//ts:title/text()}"</div>
+		<div>course: {$course/ts:course_listing/ts:course/text()}</div>
 				
-		{if ($course/ts:course_listing/ts:note/text())
-            then <div class="p-2">note: {$course/ts:course_listing/ts:note/text()}</div>
-            else ()}
-		{if ($course/ts:course_listing/ts:credits/text()) 
-            then <div class="p-2">course credits: {$course/ts:course_listing/ts:credits/text()}</div> 
-            else ()}
-		{if ($course/ts:course_listing/ts:level/text()) 
-            then <div class="p-2">level: {$course/ts:course_listing/ts:level/text()}</div> 
-            else ()}
-		{if ($course/ts:course_listing/ts:restrictions/text()) 
-            then <div class="p-2">restrictions: {$course/ts:course_listing/ts:restrictions}</div> 
-            else ()}
-		<div class="p-2">section_listing:</div>
+		{if ($course/ts:course_listing/ts:note/text()) then <div class="detailitem">note: {$course/ts:course_listing/ts:note/text()}</div> else ()}
+		{if ($course/ts:course_listing/ts:credits/text()) then <div class="detailitem">credits: {$course/ts:course_listing/ts:credits/text()}</div> else ()}
+		{if ($course/ts:course_listing/ts:level/text()) then <div class="detailitem">level: {$course/ts:course_listing/ts:level/text()}</div> else ()}
+		{if ($course/ts:course_listing/ts:restrictions/text()) then <div class="detailitem">restrictions: {$course/ts:course_listing/ts:restrictions/text()}</div> else ()}
+		<div>section_listing:</div>
 		
-		{
-            for $scetion in $course//ts:section_listing
+		{for $scetion in $course//ts:section_listing
 		
-            return 
-            <div class="p-4">
-                    { if($scetion/ts:section_note/text()) then <div>  section_note: {$scetion/ts:section_note/text()}</div> else () }
-                    <div class="p-2">section: {$scetion/ts:section/text()}</div>
-                    <div class="p-2">days: {$scetion/ts:days/text()}</div>
-                <div class="p-2">hours</div>
-                    <div class="hours p-2">start: {$scetion/ts:hours/ts:start/text()}</div>
-                    <div class="hours p-2">end: {$scetion/ts:hours/ts:end/text()}</div>
-                    <div class="p-2">instructor: { $scetion/ts:instructor/text()}</div>
-                { if($scetion/ts:comments/text()) then <div>  comments: {$scetion/ts:comments/text()}</div> else () }
-		
-            </div> 
-        }
+		return 
+		<div class="section_listing">
+				{ if($scetion/ts:section_note/text()) then <div>  section_note: {$scetion/ts:section_note/text()}</div> else () }
+				<div>section: {$scetion/ts:section/text()}</div>
+				<div>days: {$scetion/ts:days/text()}</div>
+			<div>hours</div>
+				<div class="hours">start: {$scetion/ts:hours/ts:start/text()}</div>
+				<div class="hours">end: {$scetion/ts:hours/ts:end/text()}</div>
+					<div>bldg_and_rm</div>
+				<div class="bldg_and_rm">bldg: {$scetion/ts:bldg_and_rm/ts:bldg/text()}</div>
+				<div class="bldg_and_rm">rm: {$scetion/ts:bldg_and_rm/ts:rm/text()}</div>
+				<div>instructor: { $scetion/ts:instructor/text()}</div>
+	{ if($scetion/ts:comments/text()) then <div>  comments: {$scetion/ts:comments/text()}</div> else () }
+
+				<p>-----------------------------------------------</p>			
+		</div> 
+}
 		</div>
 		
 };
