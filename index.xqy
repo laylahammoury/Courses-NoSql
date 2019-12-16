@@ -24,8 +24,7 @@ declare variable $options :=
             <search:sort-order>
                 <search:score />
             </search:sort-order>
-        </search:state>
-               
+        </search:state>      
         <search:state name="title">
             <search:sort-order direction="ascending" type="xs:string">
                 <search:element ns="http://uwm.edu/courses" name="title"/>
@@ -86,6 +85,9 @@ declare function local:add-sort($q){
             return fn:concat($q," sort:",$sortby)
         else $q
 };
+declare function local:get-sort($q){
+    fn:replace(fn:tokenize($q," ")[fn:contains(.,"sort")],"[()]","")
+};
 
 (: determines if the end-user set the sort through the drop-down or through editing the search text field or came from the advanced search form :)
 declare function local:sort-controller(){
@@ -129,18 +131,18 @@ declare function local:song-detail()
 		<div class="p-2">section_listing:</div>
 		
 		{
-            for $scetion in $course//ts:section_listing
+            for $section in $course//ts:section_listing
 		
             return 
             <div class="p-4">
-                    { if($scetion/ts:section_note/text()) then <div>  section_note: {$scetion/ts:section_note/text()}</div> else () }
-                    <div class="p-2">section: {$scetion/ts:section/text()}</div>
-                    <div class="p-2">days: {$scetion/ts:days/text()}</div>
+                    { if($section/ts:section_note/text()) then <div>  section_note: {$section/ts:section_note/text()}</div> else () }
+                    <div class="p-2">section: {$section/ts:section/text()}</div>
+                    <div class="p-2">days: {$section/ts:days/text()}</div>
                 <div class="p-2">hours</div>
-                    <div class="hours p-2">start: {$scetion/ts:hours/ts:start/text()}</div>
-                    <div class="hours p-2">end: {$scetion/ts:hours/ts:end/text()}</div>
-                    <div class="p-2">instructor: { $scetion/ts:instructor/text()}</div>
-                { if($scetion/ts:comments/text()) then <div>  comments: {$scetion/ts:comments/text()}</div> else () }
+                    <div class="hours p-2">start: {$section/ts:hours/ts:start/text()}</div>
+                    <div class="hours p-2">end: {$section/ts:hours/ts:end/text()}</div>
+                    <div class="p-2">instructor: { $section/ts:instructor/text()}</div>
+                { if($section/ts:comments/text()) then <div>  comments: {$section/ts:comments/text()}</div> else () }
 		
             </div> 
         }
@@ -167,15 +169,15 @@ declare function local:search-results()
 			let $uri := fn:data($course/@uri)
 			let $course-doc := fn:doc($uri)
 			return 
-			<div class="card w-100 mx-5 m-3">
+			<div class="card w-100 m-3">
 				<h5 class="card-header"> {$course-doc//ts:title/text()}</h5>
 				<div class="card-body">
 					<h5 class="card-title"> Course number :- {$course-doc//ts:course}</h5>
-					<p class="card-text">{fn:tokenize($course-doc//ts:descr, " ") [1 to 70]}
-						{local:description($course)}
-					</p>
                     <div>Course days are:  {fn:string-join(distinct-values($course-doc//ts:days/text()), ' ')} </div> 
                     <div>Course instructor/s :  {fn:string-join(distinct-values($course-doc//ts:instructor/text()), ' ')} </div> 
+                        restrictions :- {fn:substring($course-doc//ts:restrictions,4,50)}...
+
+						<a href="index.xqy?uri={xdmp:url-encode(fn:base-uri($course-doc))}">[more]</a>
 				</div>
 			</div>
 	return
@@ -184,9 +186,7 @@ declare function local:search-results()
 	else <div>Sorry, no results for your search.<br/><br/><br/></div>
 };
 (: gets the current sort argument from the query string :)
-declare function local:get-sort($q){
-    fn:replace(fn:tokenize($q," ")[fn:contains(.,"sort")],"[()]","")
-};
+
 
 declare function local:facets()
 {
